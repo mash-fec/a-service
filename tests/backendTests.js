@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const faker = require('faker');
 const server = require('../server/index.js');
 const db = require('../database/index.js');
-const seedDb = require('../database/seedingDb.js');
 
 mongoose.connect('mongodb://localhost/morehomes', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false });
 
@@ -24,6 +23,26 @@ const sampleHome = new ModelSample({
   reviews: faker.random.number({ min: 20, max: 50 })
 });
 
+describe('Seeding the database', () => {
+  before(() => {
+    db.saveHome(sampleHome);
+  });
+
+  it('should save a document in the database using saveHome function', () => {
+    ModelSample.find((err, results) => {
+      should.exist(results[0]);
+      results[0].should.be.an('object');
+      results[0].should.have.property('pictureUrl');
+      results[0].should.have.property('typeOfHome');
+      results[0].should.have.property('city');
+      results[0].should.have.property('description');
+      results[0].should.have.property('price');
+      results[0].should.have.property('rating');
+      results[0].should.have.property('reviews');
+    });
+  });
+});
+
 describe('GET request to /', () => {
   it('should return response status code 200', (done) => {
     chai.request(server)
@@ -36,9 +55,6 @@ describe('GET request to /', () => {
 });
 
 describe('GET request to /morehomes', () => {
-  before(() => {
-    seedDb();
-  });
   it('should return 12 homes from the database', (done) => {
     chai.request(server)
       .get('/morehomes')
@@ -55,28 +71,5 @@ describe('GET request to /morehomes', () => {
         res.body.length.should.equal(12);
         done();
       });
-  });
-});
-
-describe('Seeding the database', () => {
-  before(() => {
-    db.saveHome(sampleHome);
-  });
-
-  it('should save a document in the database using saveHome function', () => {
-    setTimeout(() => {
-      ModelSample.find((err, results) => {
-        console.log('RESULTS', results);
-        should.exist(results[0]);
-        results[0].should.be.an('object');
-        results[0].should.have.property('pictureUrl');
-        results[0].should.have.property('typeOfHome');
-        results[0].should.have.property('city');
-        results[0].should.have.property('description');
-        results[0].should.have.property('price');
-        results[0].should.have.property('rating');
-        results[0].should.have.property('reviews');
-      });
-    }, 1000);
   });
 });
