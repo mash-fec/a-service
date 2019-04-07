@@ -10,17 +10,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// This may not be needed, delete if unused
-app.get('/allhomes', (req, res) => {
-  db.readAll((err, results) => {
-    if (err) {
-      console.log('readAll error:', err);
-      res.status(500).end();
-    }
-    res.status(200).send(results);
-  });
-});
-
 // This will generate a random id to be the first home in the picture carousel
 // Both the minimim and maximum are inclusive
 function getRandomId(min, max) {

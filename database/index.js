@@ -47,11 +47,6 @@ function saveHome(oneHome) {
   });
 }
 
-// This is currently not in use, but leaving in for possible future use
-function readAll(callback) {
-  Home.find(callback);
-}
-
 function getOneHomeById(id, callback) {
   Home.findById(id, callback);
 }
@@ -60,6 +55,5 @@ module.exports = {
   homeSchema,
   assignUrl,
   saveHome,
-  readAll,
   getOneHomeById
 };
